@@ -1,0 +1,39 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{562992F5-89D4-43F7-B4C4-2D89DCD01FA2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6F8BF119-C82B-488A-9EBD-B78EB6340F03}"
+	ProjectSection(SolutionItems) = preProject
+		global.json = global.json
+	EndProjectSection
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OpenSkyNet", "OpenSkyNet\OpenSkyNet.xproj", "{436B0BA0-B68D-441F-A7AF-5B9FA403CF00}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "OpenSkyNet.ConsoleSample", "OpenSkyNet.ConsoleSample\OpenSkyNet.ConsoleSample.xproj", "{B37CBC2B-38CE-4CEA-9282-519F7BF0164E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{436B0BA0-B68D-441F-A7AF-5B9FA403CF00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{436B0BA0-B68D-441F-A7AF-5B9FA403CF00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{436B0BA0-B68D-441F-A7AF-5B9FA403CF00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{436B0BA0-B68D-441F-A7AF-5B9FA403CF00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B37CBC2B-38CE-4CEA-9282-519F7BF0164E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B37CBC2B-38CE-4CEA-9282-519F7BF0164E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B37CBC2B-38CE-4CEA-9282-519F7BF0164E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B37CBC2B-38CE-4CEA-9282-519F7BF0164E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{436B0BA0-B68D-441F-A7AF-5B9FA403CF00} = {562992F5-89D4-43F7-B4C4-2D89DCD01FA2}
+		{B37CBC2B-38CE-4CEA-9282-519F7BF0164E} = {562992F5-89D4-43F7-B4C4-2D89DCD01FA2}
+	EndGlobalSection
+EndGlobal
