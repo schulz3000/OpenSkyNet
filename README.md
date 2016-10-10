@@ -3,6 +3,9 @@
 
 dotnet lib for the opensky-network.org api
 
+##Builds
+[![Build status](https://ci.appveyor.com/api/projects/status/gwga69d3bnlmis7k?svg=true)](https://ci.appveyor.com/project/schulz3000/openskynet)
+
 ##Usage
 
 ```csharp
