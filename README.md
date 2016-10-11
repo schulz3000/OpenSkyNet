@@ -23,8 +23,8 @@ client.Dispose();
 //Get all current states
 var result = await client.GetStatesAsync();
 
-//Get all states from specific time. Time must be given as Unix Timestamp.
-var result = await client.GetStatesAsync(timestamp:12345679);
+//Get all states from specific time.
+var result = await client.GetStatesAsync(time:DateTime.UtcNow);
 
 //Get all states for specific ICAO24 transponder address. ICAO24 must be given in hex representation.
 var result = await client.GetStatesAsync(icao24: new[] { "abc9f3", "3e1bf9" });
@@ -36,8 +36,8 @@ Works only when credentials are given
 //Get all current states
 var result = await client.GetMyStatesAsync();
 
-//Get all states from specific time. Time must be given as Unix Timestamp.
-var result = await client.GetMyStatesAsync(timestamp:12345679);
+//Get all states from specific time.
+var result = await client.GetMyStatesAsync(time:DateTime.UtcNow);
 
 //Get all states for specific ICAO24 transponder address. ICAO24 must be given in hex representation.
 var result = await client.GetMyStatesAsync(icao24: new[] { "abc9f3", "3e1bf9" });
