@@ -2,9 +2,9 @@
 
 namespace OpenSkyNet
 {
-    class OpenSkyStates:IOpenSkyStates
+    class OpenSkyStates : IOpenSkyStates
     {
-        [JsonProperty(PropertyName ="time")]
+        [JsonProperty(PropertyName = "time")]
         public int TimeStamp { get; set; }
         [JsonConverter(typeof(StateVectorArrayJsonConverter))]
         public IStateVector[] States { get; set; }

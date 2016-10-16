@@ -2,7 +2,7 @@
   "title": "OpenSkyNet",
   "copyright": "schulz3000",
   "description": "dotnet lib for the opensky-network.org api",
-  "version": "0.0.0.1-alpha",
+  "version": "0.0.0.1",
   "packOptions": {
     "summary": "dotnet client for opensky-network.org",
     "owners": [ "schulz3000" ],
@@ -18,26 +18,28 @@
     "xmlDoc": true,
     "warningsAsErrors": true
   },
-  "dependencies": {
-    "NETStandard.Library": "1.6.0",
+  "dependencies": {    
     "Newtonsoft.Json": "9.0.1"
   },
 
-  "frameworks": {
+  "frameworks": {    
     "NET40": {
       "dependencies": {
         "Microsoft.Bcl.Async": "1.0.168",
         "microsoft.net.http": "2.2.29"
       }
     },
-    "NET45": {},
-    "netstandard1.1": {
+    "NET45": {
       "dependencies": {
-        "System.Net.Http": "4.1.0"
+        "microsoft.net.http": "2.2.29"
       }
     },
-    "netstandard1.6": {
-      "imports": "dnxcore50"      
+    "netstandard1.1": {
+      "imports": "dnxcore50",
+      "dependencies": {
+        "NETStandard.Library": "1.6.0",
+        "System.Net.Http": "4.1.0"
+      }
     }
   }
 }

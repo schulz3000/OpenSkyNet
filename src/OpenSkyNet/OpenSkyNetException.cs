@@ -6,15 +6,15 @@ namespace OpenSkyNet
     /// 
     /// </summary>
     public class OpenSkyNetException : Exception
-    {       
+    {
         /// <summary>
         /// 
         /// </summary>
         /// <param name="message"></param>
-        public OpenSkyNetException(string message) 
+        public OpenSkyNetException(string message)
             : base(message)
         {
-           
+
         }
     }
 }
