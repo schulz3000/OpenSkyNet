@@ -1,12 +1,13 @@
 version: 1.0.{build}
-os: Visual Studio 2015
+os: Visual Studio 2017
 pull_requests:
   do_not_increment_build_number: true
 environment:
   # Don't report back to the mothership
   DOTNET_CLI_TELEMETRY_OPTOUT: 1
 skip_tags: true
+test: off
 build_script:
   - ps: dotnet --info  
-  - ps: dotnet restore
-  - ps: dotnet --verbose build .\src\OpenSkyNet
+  - ps: dotnet restore .\src\OpenSkyNet
+  - ps: dotnet build .\src\OpenSkyNet
