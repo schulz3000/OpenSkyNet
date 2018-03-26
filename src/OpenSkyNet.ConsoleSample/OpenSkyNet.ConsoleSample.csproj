@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Console Sampleclient for OpenSkyNet</Description>
+    <Copyright>schulz3000</Copyright>
+    <AssemblyTitle>OpenSkyNet Console Sample</AssemblyTitle>
+    <VersionPrefix>0.0.0.1</VersionPrefix>
+    <Authors>schulz3000</Authors>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <AssemblyName>OpenSkyNet.ConsoleSample</AssemblyName>
+    <OutputType>Exe</OutputType>
+    <PackageId>OpenSkyNet.ConsoleSample</PackageId>
+    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\OpenSkyNet\OpenSkyNet.csproj" />
+  </ItemGroup>
+
+</Project>

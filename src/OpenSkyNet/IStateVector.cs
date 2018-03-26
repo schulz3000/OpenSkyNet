@@ -10,7 +10,7 @@
         /// </summary>
         string Icao24 { get; }
         /// <summary>
-        /// Callsign of the vehicle (8 chars). Can be null if no callsign has been received.
+        /// Callsign of the vehicle. Can be null if no callsign has been received.
         /// </summary>
         string CallSign { get; }
         /// <summary>
@@ -20,11 +20,11 @@
         /// <summary>
         /// Unix timestamp (seconds) for the last position update. Can be null if no position report was received by OpenSky within the past 15s.
         /// </summary>
-        float? TimePosition { get; }
+        int? TimePosition { get; }
         /// <summary>
-        /// Unix timestamp (seconds) for the last velocity update. Can be null if no velocity report was received by OpenSky within the past 15s.
+        /// Unix timestamp (seconds) for the last update in general. This field is updated for any new, valid message received from the transponder.
         /// </summary>
-        float? TimeVelocity { get; }
+        int LastContact { get; }       
         /// <summary>
         /// WGS-84 longitude in decimal degrees. Can be null.
         /// </summary>
@@ -36,7 +36,7 @@
         /// <summary>
         /// Barometric or geometric altitude in meters. Can be null.
         /// </summary>
-        float? Altitude { get; }
+        float? GeoAltitude { get; }
         /// <summary>
         /// Boolean value which indicates if the position was retrieved from a surface position report.
         /// </summary>
@@ -57,5 +57,21 @@
         /// IDs of the receivers which contributed to this state vector. Is null if no filtering for sensor was used in the request.
         /// </summary>
         int[] Sensors { get; }
+        /// <summary>
+        /// Barometric altitude in meters. Can be null.
+        /// </summary>
+        float? BaroAltitude { get; }
+        /// <summary>
+        /// The transponder code aka Squawk. Can be null.
+        /// </summary>
+        string Squawk { get; }
+        /// <summary>
+        /// Whether flight status indicates special purpose indicator.
+        /// </summary>
+        bool Spi { get; }
+        /// <summary>
+        /// Origin of this state’s position: 0 = ADS-B, 1 = ASTERIX, 2 = MLAT
+        /// </summary>
+        int PositionSource { get; }
     }
 }

@@ -4,6 +4,7 @@ using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace OpenSkyNet
@@ -20,7 +21,7 @@ namespace OpenSkyNet
         /// <summary>
         /// Detect if Credentials are given
         /// </summary>
-        protected bool HasCredentials { get { return client.DefaultRequestHeaders.Authorization != null; } }
+        protected bool HasCredentials => client.DefaultRequestHeaders.Authorization != null;
 
         /// <summary>
         /// 
@@ -37,6 +38,7 @@ namespace OpenSkyNet
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
+        /// <exception cref="ArgumentNullException"></exception>
         protected Connection(string username, string password)
             : this()
         {
@@ -54,14 +56,16 @@ namespace OpenSkyNet
         /// </summary>
         /// <typeparam name="TResult"></typeparam>
         /// <param name="uriPath"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        protected async Task<TResult> GetAsync<TResult>(string uriPath)
+        /// <exception cref="OpenSkyNetException"></exception>
+        protected async Task<TResult> GetAsync<TResult>(string uriPath, CancellationToken token = default)
         {
-            var response = await client.GetAsync(uriPath);
+            var response = await client.GetAsync(uriPath, token).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadAsStringAsync();
+                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return JsonConvert.DeserializeObject<TResult>(result);
             }
 
@@ -77,12 +81,20 @@ namespace OpenSkyNet
             GC.SuppressFinalize(this);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        protected virtual void OnDispose()
+        {
+        }
+
         void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (client != null)
-                    client.Dispose();
+                OnDispose();
+
+                client?.Dispose();
             }
         }
     }
