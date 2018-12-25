@@ -5,7 +5,7 @@
     <Copyright>schulz3000</Copyright>
     <AssemblyTitle>OpenSkyNet</AssemblyTitle>
     <VersionPrefix>0.0.0.1</VersionPrefix>
-    <TargetFrameworks>net45;netstandard1.2</TargetFrameworks>
+    <TargetFrameworks>net45;netstandard1.2;netstandard2.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>OpenSkyNet</AssemblyName>
@@ -23,13 +23,25 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.2' ">
-    <DefineConstants>COREFX</DefineConstants>
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.2' OR '$(TargetFramework)' == 'netstandard2.0'">
+    <DefineConstants>$(DefineConstants);COREFX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
-  </ItemGroup>  
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />    
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SourceLink.Create.CommandLine" Version="2.8.3" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <DotNetCliToolReference Include="dotnet-sourcelink" Version="2.8.0" />
+    <PackageReference Include="SourceLink.Create.GitHub" Version="2.8.3" PrivateAssets="all">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.8.0" />
+  </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
     <PackageReference Include="microsoft.net.http" Version="2.2.29" />
