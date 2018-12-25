@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace OpenSkyNet
 {
@@ -16,13 +17,20 @@ namespace OpenSkyNet
             service = api;
             observers = new HashSet<OpenSkyObservable>();
             token.Register(CompleteObservers);
-            timer = new Timer(new TimerCallback(OnTick), token, 0, 10000);
+            Task.Run(()=>StartTimer(token));
         }
 
-        async void OnTick(object state)
+        async Task StartTimer(CancellationToken cancellationToken)
         {
-            var cancellationToken = (CancellationToken)state;
+            while(!cancellationToken.IsCancellationRequested)
+            {
+                await OnTick(cancellationToken).ConfigureAwait(false);
+                await Task.Delay(10000, cancellationToken).ConfigureAwait(false);
+            }
+        }
 
+        async Task OnTick(CancellationToken cancellationToken)
+        {
             if (observers.Count == 0)
                 return;
 

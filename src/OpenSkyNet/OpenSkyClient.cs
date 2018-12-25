@@ -40,7 +40,7 @@ namespace OpenSkyNet
         /// <returns></returns>
         public Task<IOpenSkyStates> GetStatesAsync(DateTime time = default, string[] icao24 = null, CancellationToken token = default)
         {
-            var timestamp = GetUnixTimestamp(time);
+            var timestamp = time.ToUnixTimestamp();
 
             return GetStatesBasicAsync("states/all", timestamp, icao24, null, token);
         }
@@ -59,7 +59,7 @@ namespace OpenSkyNet
             if (!HasCredentials)
                 throw new OpenSkyNetException("Anonymous access of 'GetMyStatesAsync' not allowed");
 
-            var timestamp = GetUnixTimestamp(time);
+            var timestamp = time.ToUnixTimestamp();
 
             return GetStatesBasicAsync("states/own", timestamp, icao24, serials, token);
         }
@@ -68,19 +68,30 @@ namespace OpenSkyNet
         /// 
         /// </summary>
         /// <param name="icao24"></param>
+        /// <param name="time"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        public IObservable<IStateVector> TrackFlight(string icao24) => manager.GetObservableFor(icao24);
-
-        static readonly DateTime epoch = new DateTime(1970, 1, 1);
-
-        static int GetUnixTimestamp(DateTime time)
+        public async Task<IOpenSkyTrack> GetTrackByAircraft(string icao24, DateTime time = default, CancellationToken token = default)
         {
-            var result = (int)time.ToUniversalTime().Subtract(epoch).TotalSeconds;
-            if (result < 0)
-                return -1;
+            if (string.IsNullOrWhiteSpace(icao24))
+                throw new ArgumentNullException(nameof(icao24));
 
-            return result;
+            var timestamp = time.ToUnixTimestamp();
+
+            if (time < DateTime.Now.AddDays(-30) || time > DateTime.Now)
+                timestamp = 0;
+
+            var query = $"?icao24={icao24}&time={timestamp}";
+
+            return await GetAsync<OpenSkyTrack>(query, token).ConfigureAwait(false) as IOpenSkyTrack;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="icao24"></param>
+        /// <returns></returns>
+        public IObservable<IStateVector> TrackFlight(string icao24) => manager.GetObservableFor(icao24);       
 
         async Task<IOpenSkyStates> GetStatesBasicAsync(string query, int timestamp, string[] icao24, int[] serials, CancellationToken token = default)
         {

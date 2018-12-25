@@ -6,6 +6,7 @@ namespace OpenSkyNet
     {
         [JsonProperty(PropertyName = "time")]
         public int TimeStamp { get; set; }
+
         [JsonConverter(typeof(StateVectorArrayJsonConverter))]
         public IStateVector[] States { get; set; }
     }
