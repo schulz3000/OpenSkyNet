@@ -4,9 +4,9 @@ using System;
 
 namespace OpenSkyNet
 {
-    class StateVectorJsonConverter : JsonConverter
+    class StateVectorConverter : JsonConverter
     {
-        public override bool CanConvert(Type objectType) => false;
+        public override bool CanConvert(Type objectType) => objectType == typeof(OpenSkyStateVector);
 
         public override bool CanRead => true;
 
@@ -16,12 +16,12 @@ namespace OpenSkyNet
         {
             var jsonArray = JArray.Load(reader);
 
-            return new StateVector
+            return new OpenSkyStateVector
             {
                 Icao24 = jsonArray[0].Value<string>(),
                 CallSign = jsonArray[1].Value<string>()?.Trim(),
                 OriginCountry = jsonArray[2].Value<string>(),
-                TimePosition = jsonArray[3].Value<int?>(),
+                TimePosition = jsonArray[3].Value<int?>().FromUnixTimestamp(),
                 LastContact = jsonArray[4].Value<int>(),
                 Longitude = jsonArray[5].Value<float?>(),
                 Latitude = jsonArray[6].Value<float?>(),
@@ -39,8 +39,6 @@ namespace OpenSkyNet
         }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
+            => throw new NotImplementedException();
     }
 }

@@ -29,7 +29,7 @@ namespace OpenSkyNet
         /// </summary>
         /// <param name="message"></param>
         /// <param name="innerException"></param>
-        public OpenSkyNetException(string message, Exception innerException) 
+        public OpenSkyNetException(string message, Exception innerException)
             : base(message, innerException)
         {
         }
@@ -40,7 +40,7 @@ namespace OpenSkyNet
         /// </summary>
         /// <param name="info"></param>
         /// <param name="context"></param>
-        protected OpenSkyNetException(SerializationInfo info, StreamingContext context) 
+        protected OpenSkyNetException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

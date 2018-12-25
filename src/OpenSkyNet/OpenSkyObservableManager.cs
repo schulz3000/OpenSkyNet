@@ -8,7 +8,6 @@ namespace OpenSkyNet
 {
     class OpenSkyObservableManager
     {
-        readonly Timer timer;
         readonly HashSet<OpenSkyObservable> observers;
         readonly OpenSkyClient service;
 
@@ -17,12 +16,12 @@ namespace OpenSkyNet
             service = api;
             observers = new HashSet<OpenSkyObservable>();
             token.Register(CompleteObservers);
-            Task.Run(()=>StartTimer(token));
+            Task.Run(() => StartTimer(token));
         }
 
         async Task StartTimer(CancellationToken cancellationToken)
         {
-            while(!cancellationToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 await OnTick(cancellationToken).ConfigureAwait(false);
                 await Task.Delay(10000, cancellationToken).ConfigureAwait(false);
@@ -63,7 +62,7 @@ namespace OpenSkyNet
             }
         }
 
-        public IObservable<IStateVector> GetObservableFor(string icao24)
+        public IObservable<IOpenSkyStateVector> GetObservableFor(string icao24)
         {
             var observer = observers.FirstOrDefault(f => f.Icao24 == icao24);
 
@@ -78,8 +77,6 @@ namespace OpenSkyNet
 
         void CompleteObservers()
         {
-            timer.Dispose();
-
             foreach (var item in observers)
                 item.EndTracking();
         }

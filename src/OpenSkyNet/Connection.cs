@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -17,6 +18,7 @@ namespace OpenSkyNet
         const string baseurl = "opensky-network.org/api/";
 
         readonly HttpClient client;
+        readonly JsonSerializer serializer;
 
         /// <summary>
         /// Detect if Credentials are given
@@ -31,6 +33,8 @@ namespace OpenSkyNet
             client = new HttpClient(new HttpClientHandler { AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate }, true);
             client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             client.BaseAddress = new Uri("https://" + baseurl);
+
+            serializer = new JsonSerializer();
         }
 
         /// <summary>
@@ -61,15 +65,19 @@ namespace OpenSkyNet
         /// <exception cref="OpenSkyNetException"></exception>
         protected async Task<TResult> GetAsync<TResult>(string uriPath, CancellationToken token = default)
         {
-            var response = await client.GetAsync(uriPath, token).ConfigureAwait(false);
+            var response = await client.GetAsync(uriPath, HttpCompletionOption.ResponseHeadersRead, token).ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return JsonConvert.DeserializeObject<TResult>(result);
+                using (var stream = await response.Content.ReadAsStreamAsync().ConfigureAwait(false))
+                using (var sr = new StreamReader(stream))
+                using (var jtr = new JsonTextReader(sr))
+                {
+                    return serializer.Deserialize<TResult>(jtr);
+                }
             }
 
-            throw new OpenSkyNetException(response.ReasonPhrase);
+            throw new OpenSkyNetException($"{ response.StatusCode } - {response.ReasonPhrase}");
         }
 
         /// <summary>
@@ -88,6 +96,10 @@ namespace OpenSkyNet
         {
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="disposing"></param>
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)

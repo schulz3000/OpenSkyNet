@@ -1,9 +1,11 @@
-﻿namespace OpenSkyNet
+﻿using System;
+
+namespace OpenSkyNet
 {
     /// <summary>
     /// state vector
     /// </summary>
-    public interface IStateVector
+    public interface IOpenSkyStateVector
     {
         /// <summary>
         /// Unique ICAO 24-bit address of the transponder in hex string representation.
@@ -23,7 +25,7 @@
         /// <summary>
         /// Unix timestamp (seconds) for the last position update. Can be null if no position report was received by OpenSky within the past 15s.
         /// </summary>
-        int? TimePosition { get; }
+        DateTime? TimePosition { get; }
 
         /// <summary>
         /// Unix timestamp (seconds) for the last update in general. This field is updated for any new, valid message received from the transponder.

@@ -20,10 +20,16 @@ namespace OpenSkyNet.ConsoleSample
             {
                 var result = await client.GetStatesAsync();
 
-                Console.WriteLine(result.TimeStamp);
+                Console.WriteLine(result.Time);
 
-                foreach (var item in result.States)
-                    Console.WriteLine(item.OriginCountry);
+                //foreach (var item in result.States)
+                //    Console.WriteLine(item.OriginCountry);
+
+                var aircraftTrack = await client.GetTrackByAircraftAsync("acb84d");
+                Console.WriteLine(aircraftTrack.CalllSign);
+
+                var flights = await client.GetFlights(DateTime.Now.AddMinutes(-110), DateTime.Now);
+                Console.WriteLine(flights[0].CallSign);
 
                 var x = client.TrackFlight("acb84d");
                 x.Subscribe(new FlightSubscription());
@@ -33,7 +39,7 @@ namespace OpenSkyNet.ConsoleSample
         }
     }
 
-    class FlightSubscription : IObserver<IStateVector>
+    class FlightSubscription : IObserver<IOpenSkyStateVector>
     {
         public void OnCompleted()
         {
@@ -45,7 +51,7 @@ namespace OpenSkyNet.ConsoleSample
             Console.WriteLine(error.Message);
         }
 
-        public void OnNext(IStateVector value)
+        public void OnNext(IOpenSkyStateVector value)
         {
             Console.WriteLine(value.CallSign + " - " + value.Latitude + " | " + value.Longitude);
         }

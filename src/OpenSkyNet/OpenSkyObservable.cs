@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace OpenSkyNet
 {
-    class OpenSkyObservable : IObservable<IStateVector>
+    class OpenSkyObservable : IObservable<IOpenSkyStateVector>
     {
-        readonly List<IObserver<IStateVector>> observers = new List<IObserver<IStateVector>>();
+        readonly List<IObserver<IOpenSkyStateVector>> observers = new List<IObserver<IOpenSkyStateVector>>();
 
         public string Icao24 { get; }
 
@@ -16,7 +16,7 @@ namespace OpenSkyNet
             Icao24 = icao24;
         }
 
-        public IDisposable Subscribe(IObserver<IStateVector> observer)
+        public IDisposable Subscribe(IObserver<IOpenSkyStateVector> observer)
         {
             if (!observers.Contains(observer))
                 observers.Add(observer);
@@ -26,10 +26,10 @@ namespace OpenSkyNet
 
         class Unsubscriber : IDisposable
         {
-            readonly List<IObserver<IStateVector>> _observers;
-            readonly IObserver<IStateVector> _observer;
+            readonly List<IObserver<IOpenSkyStateVector>> _observers;
+            readonly IObserver<IOpenSkyStateVector> _observer;
 
-            public Unsubscriber(List<IObserver<IStateVector>> observers, IObserver<IStateVector> observer)
+            public Unsubscriber(List<IObserver<IOpenSkyStateVector>> observers, IObserver<IOpenSkyStateVector> observer)
             {
                 _observers = observers;
                 _observer = observer;
@@ -42,7 +42,7 @@ namespace OpenSkyNet
             }
         }
 
-        public void TrackVector(IStateVector vector)
+        public void TrackVector(IOpenSkyStateVector vector)
         {
             foreach (var item in observers)
                 item.OnNext(vector);

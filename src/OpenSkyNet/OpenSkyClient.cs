@@ -29,6 +29,7 @@ namespace OpenSkyNet
         public OpenSkyClient(string username, string password)
                     : base(username, password)
         {
+            manager = new OpenSkyObservableManager(this, cts.Token);
         }
 
         /// <summary>
@@ -39,11 +40,7 @@ namespace OpenSkyNet
         /// <param name="token"></param>
         /// <returns></returns>
         public Task<IOpenSkyStates> GetStatesAsync(DateTime time = default, string[] icao24 = null, CancellationToken token = default)
-        {
-            var timestamp = time.ToUnixTimestamp();
-
-            return GetStatesBasicAsync("states/all", timestamp, icao24, null, token);
-        }
+            => GetStatesBasicAsync("states/all", time.ToUnixTimestamp(), icao24, null, token);
 
         /// <summary>
         /// 
@@ -67,11 +64,59 @@ namespace OpenSkyNet
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public Task<IOpenSkyFlight[]> GetFlights(DateTime begin, DateTime end, CancellationToken token = default)
+            => GetFlightsBasic(new OpenSkyFlightsRequest { Begin = begin, End = end }, token);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="icao24"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public Task<IOpenSkyFlight[]> GetFlightsByAircraft(string icao24, DateTime begin, DateTime end, CancellationToken token = default)
+        {
+            if (string.IsNullOrWhiteSpace(icao24))
+                throw new ArgumentNullException(nameof(icao24));
+
+            return GetFlightsBasic(new OpenSkyAircraftFlightsRequest { Icao24 = icao24, Begin = begin, End = end }, token);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="airportIcao24"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public Task<IOpenSkyFlight[]> GetArrivalsByAirport(string airportIcao24, DateTime begin, DateTime end, CancellationToken token = default)
+            => GetFlightsByAirport(new OpenSkyArrivalFlightsRequest { Airport = airportIcao24, Begin = begin, End = end }, token);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="airportIcao24"></param>
+        /// <param name="begin"></param>
+        /// <param name="end"></param>
+        /// <param name="token"></param>
+        /// <returns></returns>
+        public Task<IOpenSkyFlight[]> GetDeparturesByAirport(string airportIcao24, DateTime begin, DateTime end, CancellationToken token = default)
+            => GetFlightsByAirport(new OpenSkyDepartureFlightsRequest { Airport = airportIcao24, Begin = begin, End = end }, token);
+
+        /// <summary>
+        /// 
+        /// </summary>
         /// <param name="icao24"></param>
         /// <param name="time"></param>
         /// <param name="token"></param>
         /// <returns></returns>
-        public async Task<IOpenSkyTrack> GetTrackByAircraft(string icao24, DateTime time = default, CancellationToken token = default)
+        public Task<IOpenSkyTrack> GetTrackByAircraftAsync(string icao24, DateTime time = default, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(icao24))
                 throw new ArgumentNullException(nameof(icao24));
@@ -81,9 +126,9 @@ namespace OpenSkyNet
             if (time < DateTime.Now.AddDays(-30) || time > DateTime.Now)
                 timestamp = 0;
 
-            var query = $"?icao24={icao24}&time={timestamp}";
+            var query = $"tracks/all?icao24={icao24}&time={timestamp}";
 
-            return await GetAsync<OpenSkyTrack>(query, token).ConfigureAwait(false) as IOpenSkyTrack;
+            return GetAsync<IOpenSkyTrack>(query, token);
         }
 
         /// <summary>
@@ -91,14 +136,14 @@ namespace OpenSkyNet
         /// </summary>
         /// <param name="icao24"></param>
         /// <returns></returns>
-        public IObservable<IStateVector> TrackFlight(string icao24) => manager.GetObservableFor(icao24);       
+        public IObservable<IOpenSkyStateVector> TrackFlight(string icao24) => manager.GetObservableFor(icao24);
 
-        async Task<IOpenSkyStates> GetStatesBasicAsync(string query, int timestamp, string[] icao24, int[] serials, CancellationToken token = default)
+        Task<IOpenSkyStates> GetStatesBasicAsync(string query, int timestamp, string[] icao24, int[] serials, CancellationToken token = default)
         {
-            var dict = new Dictionary<string, string>();
+            var dict = new Dictionary<string, object>();
 
             if (timestamp > -1)
-                dict.Add("time", timestamp.ToString());
+                dict.Add("time", timestamp);
 
             if (icao24?.Length > 0)
             {
@@ -110,24 +155,52 @@ namespace OpenSkyNet
 
             if (serials?.Length > 0)
             {
-                for (int i = 0; i < icao24.Length; i++)
+                for (int i = 0; i < serials.Length; i++)
                 {
-                    dict.Add("icao24", icao24[i]);
+                    dict.Add("serials", serials[i]);
                 }
             }
 
-            if (dict.Count > 0)
+            query += QueryStringBuilder.Create(dict);
+
+            return GetAsync<IOpenSkyStates>(query, token);
+        }
+
+        Task<IOpenSkyFlight[]> GetFlightsByAirport(OpenSkyAirportFlightsRequest request, CancellationToken token = default)
+        {
+            if (string.IsNullOrWhiteSpace(request.Airport))
+                throw new ArgumentNullException(nameof(request.Airport));
+
+            return GetFlightsBasic(request, token);
+        }
+
+        Task<IOpenSkyFlight[]> GetFlightsBasic(OpenSkyFlightsRequest request, CancellationToken token = default)
+        {
+            if (request.Begin > request.End)
+                throw new OpenSkyNetException("end is before begin");
+
+            if ((request.End - request.Begin).TotalHours > 2)
+                throw new OpenSkyNetException("time range must not larger then two hours");
+
+            var query = "flights/" + request.UrlPart;
+
+            var dict = new Dictionary<string, object>();
+
+            dict.Add("begin", request.Begin.ToUnixTimestamp());
+            dict.Add("end", request.End.ToUnixTimestamp());
+
+            if (request is OpenSkyAircraftFlightsRequest aircraftRequest)
             {
-                query += "?";
-                foreach (var key in dict.Keys)
-                {
-                    query += $"{key}={dict[key]}&";
-                }
-
-                query.TrimEnd('&');
+                dict.Add("icao24", aircraftRequest.Icao24.ToLower());
+            }
+            else if (request is OpenSkyAirportFlightsRequest airportRequest)
+            {
+                dict.Add("airport", airportRequest.Airport.ToUpper());
             }
 
-            return await GetAsync<OpenSkyStates>(query, token).ConfigureAwait(false) as IOpenSkyStates;
+            query += QueryStringBuilder.Create(dict);
+
+            return GetAsync<IOpenSkyFlight[]>(query, token);
         }
 
         /// <summary>

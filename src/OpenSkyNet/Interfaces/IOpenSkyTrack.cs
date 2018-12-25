@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace OpenSkyNet
 {
     /// <summary>
     /// Aircraft Track
     /// </summary>
+    [JsonConverter(typeof(InterfaceConverter<IOpenSkyTrack, OpenSkyTrack>))]
     public interface IOpenSkyTrack
     {
         /// <summary>

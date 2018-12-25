@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace OpenSkyNet
 {
+    [JsonConverter(typeof(TrackPathConverter))]
     class OpenSkyTrackPath : IOpenSkyTrackPath
     {
         public DateTime Time { get; set; }

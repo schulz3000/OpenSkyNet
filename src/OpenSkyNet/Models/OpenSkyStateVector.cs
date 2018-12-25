@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace OpenSkyNet
 {
-    [JsonConverter(typeof(StateVectorJsonConverter))]
-    class StateVector : IStateVector
+    [JsonConverter(typeof(StateVectorConverter))]
+    class OpenSkyStateVector : IOpenSkyStateVector
     {
         public string Icao24 { get; set; }
         public string CallSign { get; set; }
         public string OriginCountry { get; set; }
-        public int? TimePosition { get; set; }
+        public DateTime? TimePosition { get; set; }
         public int LastContact { get; set; }
         public float? Longitude { get; set; }
         public float? Latitude { get; set; }

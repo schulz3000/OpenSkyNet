@@ -4,8 +4,8 @@
     <Description>dotnet lib for the opensky-network.org api</Description>
     <Copyright>schulz3000</Copyright>
     <AssemblyTitle>OpenSkyNet</AssemblyTitle>
-    <VersionPrefix>0.0.0.1</VersionPrefix>
-    <TargetFrameworks>net45;netstandard1.2;netstandard2.0</TargetFrameworks>
+    <VersionPrefix>0.0.0.2</VersionPrefix>
+    <TargetFrameworks>net45;netstandard1.1;netstandard2.0</TargetFrameworks>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>OpenSkyNet</AssemblyName>
@@ -23,12 +23,13 @@
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.2' OR '$(TargetFramework)' == 'netstandard2.0'">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'netstandard1.1'">
     <DefineConstants>$(DefineConstants);COREFX</DefineConstants>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />    
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
   </ItemGroup>
 
   <ItemGroup>
@@ -39,19 +40,12 @@
     <PackageReference Include="SourceLink.Create.GitHub" Version="2.8.3" PrivateAssets="all">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="System.Net.Http" Version="4.3.4" />
     <DotNetCliToolReference Include="dotnet-sourcelink-git" Version="2.8.0" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <PackageReference Include="microsoft.net.http" Version="2.2.29" />
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.2' ">    
-    <PackageReference Include="System.Net.Http" Version="4.3.3" />
-    <PackageReference Include="System.Threading.Timer" Version="4.3.0" />
-  </ItemGroup>
-
+  
 </Project>
