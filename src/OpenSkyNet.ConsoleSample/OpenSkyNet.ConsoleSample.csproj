@@ -6,7 +6,7 @@
     <AssemblyTitle>OpenSkyNet Console Sample</AssemblyTitle>
     <VersionPrefix>0.0.0.1</VersionPrefix>
     <Authors>schulz3000</Authors>
-    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <AssemblyName>OpenSkyNet.ConsoleSample</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>OpenSkyNet.ConsoleSample</PackageId>
